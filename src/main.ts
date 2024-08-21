@@ -1,17 +1,18 @@
 import { Plugin } from "obsidian";
+import { JournalingSettingTab } from "./settings";
 import { ExampleView, VIEW_TYPE_EXAMPLE } from "./views/ExampleView";
 import "virtual:uno.css";
 
-interface ObsidianNoteConnectionsSettings {
-    mySetting: string;
+interface JournalingPluginSettings {
+    paths: string;
 }
 
-const DEFAULT_SETTINGS: ObsidianNoteConnectionsSettings = {
-    mySetting: "default",
+const DEFAULT_SETTINGS: Partial<JournalingPluginSettings> = {
+    paths: "",
 };
 
-export default class ObsidianNoteConnections extends Plugin {
-    settings!: ObsidianNoteConnectionsSettings;
+export default class JournalingPlugin extends Plugin {
+    settings!: JournalingPluginSettings;
 
     async loadSettings() {
         this.settings = Object.assign(
@@ -27,6 +28,8 @@ export default class ObsidianNoteConnections extends Plugin {
 
     async onload() {
         await this.loadSettings();
+
+        this.addSettingTab(new JournalingSettingTab(this.app, this));
 
         this.registerView(VIEW_TYPE_EXAMPLE, (leaf) => new ExampleView(leaf));
 
