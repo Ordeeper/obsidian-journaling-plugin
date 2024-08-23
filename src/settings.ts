@@ -41,5 +41,18 @@ export class JournalingSettingTab extends PluginSettingTab {
             .infoEl.createEl("p", { cls: "setting-item-description mod-warning", text: "Ensure file names within folders adhere to the Moment.js format, see " });
 
         containerEl.find("p.mod-warning").createEl("a", { text: "docs of moment.js.", href: momentjsLink })
+
+        new Setting(containerEl)
+            .setName("Journal File Name")
+            .setDesc("Specifies the filename for the journaling view file.")
+            .addText((text) =>
+                text
+                    .setPlaceholder("File name, e.g.: Journaling.md")
+                    .setValue(this.plugin.settings.fileName)
+                    .onChange(async (value) => {
+                        this.plugin.settings.paths = value;
+                        await this.plugin.saveSettings();
+                    })
+            )
     }
 }
