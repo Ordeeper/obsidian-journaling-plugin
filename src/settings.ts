@@ -61,9 +61,9 @@ export class JournalingSettingTab extends PluginSettingTab {
             .addText((text) =>
                 text
                     .setPlaceholder("Interval in seconds, e.g., 10 for 10 seconds")
-                    .setValue(this.plugin.settings.updateInterval.toString())  // Assuming you have an updateInterval setting
+                    .setValue(this.plugin.settings.updateInterval.toString())
                     .onChange(async (value) => {
-                        this.plugin.settings.updateInterval = parseInt(value, 10);  // Parse and save the interval
+                        this.plugin.settings.updateInterval = parseInt(value, 10);
                         await this.plugin.saveSettings();
                     })
             )
