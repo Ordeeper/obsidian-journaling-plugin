@@ -1,18 +1,22 @@
-import { App, Plugin } from "obsidian";
+import { Plugin } from "obsidian";
 import { JournalingSettingTab } from "./settings";
 import "virtual:uno.css";
 import journalingView from "./scripts/JournalingView";
 
 interface JournalingPluginSettings {
+    dateFormat: string;
     paths: string;
     fileName: string;
+    filterValue: string;
     updateInterval: number;
 }
 
 const DEFAULT_SETTINGS: Partial<JournalingPluginSettings> = {
+    dateFormat: "YYYY-MM-DD",
     paths: "",
     fileName: "Journaling.md",
-    updateInterval: 15
+    filterValue: "new",
+    updateInterval: 15,
 };
 
 export default class JournalingPlugin extends Plugin {
@@ -47,5 +51,4 @@ export default class JournalingPlugin extends Plugin {
         if (this.intervalId) clearInterval(this.intervalId);
         console.log("unloading plugin");
     }
-
 }

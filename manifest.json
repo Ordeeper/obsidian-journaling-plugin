@@ -1,7 +1,7 @@
 {
-    "id": "obsidian-journaling-plugin",
+    "id": "journaling",
     "name": "Journaling",
-    "description": "View daily notes in a journal-like format, inspired by Logseq. Enhances note organization and reflection.",
+    "description": "View daily notes in a journal-like format, similar to Logseq. It enhances note organization and facilitates better reflection by consolidating daily notes into a continuous journaling view.",
     "author": "Ordeeper",
     "authorUrl": "https://github.com/Ordeeper/",
     "fundingUrl": "https://github.com/sponsors/Ordeeper/",
