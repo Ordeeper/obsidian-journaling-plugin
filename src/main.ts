@@ -1,18 +1,23 @@
-import { Plugin } from "obsidian";
+import { App, Plugin } from "obsidian";
 import { JournalingSettingTab } from "./settings";
-import { ExampleView, VIEW_TYPE_EXAMPLE } from "./views/ExampleView";
 import "virtual:uno.css";
+import journalingView from "./scripts/JournalingView";
 
 interface JournalingPluginSettings {
     paths: string;
+    fileName: string;
+    updateInterval: number;
 }
 
 const DEFAULT_SETTINGS: Partial<JournalingPluginSettings> = {
     paths: "",
+    fileName: "Journaling.md",
+    updateInterval: 15
 };
 
 export default class JournalingPlugin extends Plugin {
     settings!: JournalingPluginSettings;
+    private intervalId: NodeJS.Timeout | null = null;
 
     async loadSettings() {
         this.settings = Object.assign(
@@ -24,6 +29,9 @@ export default class JournalingPlugin extends Plugin {
 
     async saveSettings() {
         await this.saveData(this.settings);
+
+        if (this.intervalId) clearInterval(this.intervalId);
+        this.intervalId = await journalingView(this.app, this);
     }
 
     async onload() {
@@ -31,27 +39,13 @@ export default class JournalingPlugin extends Plugin {
 
         this.addSettingTab(new JournalingSettingTab(this.app, this));
 
-        this.registerView(VIEW_TYPE_EXAMPLE, (leaf) => new ExampleView(leaf));
-
-        this.addRibbonIcon("dice", "Activate view", () => {
-            this.activateView();
-        });
+        if (this.intervalId) clearInterval(this.intervalId);
+        this.intervalId = await journalingView(this.app, this);
     }
 
     onunload() {
+        if (this.intervalId) clearInterval(this.intervalId);
         console.log("unloading plugin");
     }
 
-    async activateView() {
-        this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXAMPLE);
-
-        await this.app.workspace.getRightLeaf(false).setViewState({
-            type: VIEW_TYPE_EXAMPLE,
-            active: true,
-        });
-
-        this.app.workspace.revealLeaf(
-            this.app.workspace.getLeavesOfType(VIEW_TYPE_EXAMPLE)[0],
-        );
-    }
 }
