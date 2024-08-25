@@ -16,7 +16,6 @@ export class JournalingSettingTab extends PluginSettingTab {
 
     display(): void {
         let { containerEl } = this;
-        const momentjsLink: string = "https://momentjs.com/docs/#/displaying/format/";
 
         containerEl.empty();
 
@@ -27,20 +26,19 @@ export class JournalingSettingTab extends PluginSettingTab {
         containerEl.createEl("h4", { text: "General Settings" });
 
         new Setting(containerEl)
-            .setName("Include Paths")
-            .setDesc("The daily notes located in these paths will be accessible via the journaling view.")
-            .addTextArea((text) =>
+            .setName("Date Format")
+            .setDesc(JournalingSettingTab.createFragmentWithHTML(
+                "<div class='setting-item-description'>For more syntax, refer to <a href='https://momentjs.com/docs/#/displaying/format/' target='_blank' rel='noopener'>format reference</a></div>"
+            ))
+            .addText((text) =>
                 text
-                    .setPlaceholder("Folder paths separated by commas, e.g.: path1/path2, path3, path4")
-                    .setValue(this.plugin.settings.paths)
+                    .setPlaceholder("YYYY-MM-DD")
+                    .setValue(this.plugin.settings.dateFormat)
                     .onChange(async (value) => {
-                        this.plugin.settings.paths = value;
+                        this.plugin.settings.dateFormat = value;
                         await this.plugin.saveSettings();
                     })
             )
-            .infoEl.createEl("p", { cls: "setting-item-description mod-warning", text: "Ensure file names within folders adhere to the Moment.js format, see " });
-
-        containerEl.find("p.mod-warning").createEl("a", { text: "docs of moment.js.", href: momentjsLink })
 
         new Setting(containerEl)
             .setName("Journal File Name")
@@ -56,17 +54,44 @@ export class JournalingSettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
+            .setName("Include Paths")
+            .setDesc("The daily notes located in these paths will be accessible via the journaling view.")
+            .addTextArea((text) =>
+                text
+                    .setPlaceholder("Folder paths separated by commas, e.g.: path1/path2, path3, path4")
+                    .setValue(this.plugin.settings.paths)
+                    .onChange(async (value) => {
+                        this.plugin.settings.paths = value;
+                        await this.plugin.saveSettings();
+                    })
+            )
+            .infoEl.createEl("p", { cls: "setting-item-description mod-warning", text: 'Ensure file names within folders adhere to the "Date Format."' });
+
+        new Setting(containerEl)
+            .setName("Filter By")
+            .setDesc("Choose how the plugin displays journal entries based on their dates.")
+            .addDropdown((text) =>
+                text
+                    .addOption("new", "New -> Old")
+                    .addOption("old", "Old -> New")
+                    .setValue(this.plugin.settings.filterValue)
+                    .onChange(async (value) => {
+                        this.plugin.settings.filterValue = value
+                        await this.plugin.saveSettings();
+                    })
+            )
+
+        new Setting(containerEl)
             .setName("Update Interval")
-            .setDesc("Set the interval at which the plugin scans the directories for changes. The interval is specified in milliseconds.")
+            .setDesc("Set the interval at which the plugin scans the directories for changes. The interval is specified in seconds.")
             .addText((text) =>
                 text
-                    .setPlaceholder("Interval in seconds, e.g., 10 for 10 seconds")
+                    .setPlaceholder("Interval in seconds, e.g.: 10")
                     .setValue(this.plugin.settings.updateInterval.toString())
                     .onChange(async (value) => {
                         this.plugin.settings.updateInterval = parseInt(value, 10);
                         await this.plugin.saveSettings();
                     })
             )
-
     }
 }
