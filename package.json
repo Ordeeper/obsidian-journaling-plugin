@@ -2,7 +2,7 @@
     "name": "svelted-obsidian",
     "private": true,
     "version": "1.0.0",
-    "description": "This is an Obsidian.md plugin that lets you view daily notes in a journal-like format, inspired by Logseq. Enhances note organization and reflection.",
+    "description": "View daily notes in a journal-like format, similar to Logseq. It enhances note organization and facilitates better reflection by consolidating daily notes into a continuous journaling view.",
     "main": "main.js",
     "type": "module",
     "scripts": {
