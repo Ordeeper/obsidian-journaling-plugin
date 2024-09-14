@@ -27,8 +27,5 @@
         "typescript": "^5.2.2",
         "unocss": "^0.57.2",
         "vite": "^4.5.0"
-    },
-    "dependencies": {
-        "moment": "^2.30.1"
     }
 }

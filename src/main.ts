@@ -21,7 +21,7 @@ const DEFAULT_SETTINGS: Partial<JournalingPluginSettings> = {
 
 export default class JournalingPlugin extends Plugin {
     settings!: JournalingPluginSettings;
-    private intervalId: NodeJS.Timeout | null = null;
+    private intervalId: number | null = null;
 
     async loadSettings() {
         this.settings = Object.assign(
@@ -34,7 +34,7 @@ export default class JournalingPlugin extends Plugin {
     async saveSettings() {
         await this.saveData(this.settings);
 
-        if (this.intervalId) clearInterval(this.intervalId);
+        if (this.intervalId) window.clearInterval(this.intervalId);
         this.intervalId = await journalingView(this.app, this);
     }
 
@@ -43,12 +43,12 @@ export default class JournalingPlugin extends Plugin {
 
         this.addSettingTab(new JournalingSettingTab(this.app, this));
 
-        if (this.intervalId) clearInterval(this.intervalId);
+        if (this.intervalId) window.clearInterval(this.intervalId);
         this.intervalId = await journalingView(this.app, this);
     }
 
     onunload() {
-        if (this.intervalId) clearInterval(this.intervalId);
+        if (this.intervalId) window.clearInterval(this.intervalId);
         console.log("unloading plugin");
     }
 }

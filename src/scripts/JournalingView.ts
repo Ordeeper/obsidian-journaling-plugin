@@ -1,8 +1,8 @@
-import { type App, type TAbstractFile, Vault, TFile } from "obsidian";
-import moment from "moment";
+import { type App, type TAbstractFile, type Vault, TFile } from "obsidian";
+import { moment } from "obsidian";
 import type JournalingPlugin from "../main";
 
-let intervalId: NodeJS.Timeout | null = null;
+let intervalId: number;
 
 // Scan the directories for changes and update the journaling files accordingly
 async function scanDirectories(
@@ -29,8 +29,8 @@ async function scanDirectories(
                 const fileNameWithoutExtA = a.name.replace(".md", "");
                 const fileNameWithoutExtB = b.name.replace(".md", "");
 
-                const dateA = moment(fileNameWithoutExtA, dateFormat);
-                const dateB = moment(fileNameWithoutExtB, dateFormat);
+                const dateA = moment.utc(fileNameWithoutExtA);
+                const dateB = moment.utc(fileNameWithoutExtB);
 
                 return filterValue === "new"
                     ? dateB.diff(dateA)
@@ -79,7 +79,7 @@ async function getPathsByDate(
 ): Promise<TFile[]> {
     const files = vault.getMarkdownFiles().filter((file) => {
         const fileNameWithoutExt = file.name.replace(".md", "");
-        const parsedDate = moment(fileNameWithoutExt, dateFormat, true);
+        const parsedDate = moment.utc(fileNameWithoutExt, dateFormat, true);
         return file.path.startsWith(path.trim()) && parsedDate.isValid();
     });
     return files;
@@ -94,9 +94,9 @@ function startMonitoring(
     dateFormat: string,
     filterValue: string,
 ) {
-    if (intervalId) clearInterval(intervalId);
+    if (intervalId) window.clearInterval(intervalId);
 
-    intervalId = setInterval(async () => {
+    intervalId = window.setInterval(async () => {
         await scanDirectories(vault, paths, fileName, dateFormat, filterValue);
     }, updateInterval);
 

@@ -16,19 +16,12 @@ export class JournalingSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        this.component = new Header({
-            target: this.containerEl,
-        });
-
-        containerEl.createEl("h4", { text: "General Settings" });
-
         new Setting(containerEl)
             .setName("Date Format")
             .setDesc("For more syntax, refer to ")
-            .addText((text) =>
-                text
-                    .setPlaceholder("YYYY-MM-DD")
-                    .setValue(this.plugin.settings.dateFormat)
+            .addMomentFormat((format) =>
+                format
+                    .setDefaultFormat(this.plugin.settings.dateFormat)
                     .onChange(async (value) => {
                         this.plugin.settings.dateFormat = value;
                         await this.plugin.saveSettings();
@@ -108,5 +101,10 @@ export class JournalingSettingTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }),
             );
+
+        this.component = new Header({
+            target: this.containerEl,
+        });
+
     }
 }
